@@ -10,23 +10,29 @@ import UIKit
 
 class GroupTableViewCell: UITableViewCell {
     
+    //[C11-10]
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var stocksLabel: UILabel!
 
+    //[C11-11]
     override func awakeFromNib() {
         super.awakeFromNib()
         titleLabel.text = nil
         stocksLabel.text = nil
         titleLabel.textColor = .themeBlue
+        
+        //[C11-21]
         stocksLabel.numberOfLines = 0
     }
     
+    //[C11-12]
     override func prepareForReuse() {
         super.prepareForReuse()
         titleLabel.text = nil
         stocksLabel.text = nil
     }
     
+    //[C11-13]
     var group: Group? {
         didSet {
             guard let group = group else { return }
@@ -34,6 +40,7 @@ class GroupTableViewCell: UITableViewCell {
         }
     }
     
+    //[C11-14]
     var stocks: [Stock]? {
         didSet {
             guard let stocks = stocks else { return }

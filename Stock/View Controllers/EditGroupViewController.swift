@@ -31,6 +31,7 @@ class EditGroupViewController: UIViewController {
         tableView.backgroundColor = .backgroundView
         tableView.separatorColor = .separator
         tableView.register(UINib(nibName: TextFieldTableViewCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: TextFieldTableViewCell.reuseIdentifier)
+        //[C4-16]
         tableView.register(DeleteTableViewCell.self, forCellReuseIdentifier: DeleteTableViewCell.reuseIdentifier)
     }
     
@@ -97,6 +98,7 @@ extension EditGroupViewController: UITableViewDataSource {
                 return cell
             }
         } else if indexPath.section == 1 && indexPath.row == 0 {
+            //[C4-16]
             let cell = tableView.dequeueReusableCell(withIdentifier: DeleteTableViewCell.reuseIdentifier, for: indexPath)
             cell.textLabel?.text = "그룹삭제"
             return cell

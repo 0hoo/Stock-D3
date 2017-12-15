@@ -9,12 +9,14 @@
 import Foundation
 import UIKit
 
+//[C2-5]
 struct KeyboardData {
     public var frame = CGRect.zero
     public var animationDuration: TimeInterval = 0.2
     public var animationCurve = UIViewAnimationOptions()
 }
 
+//[C2-5]
 extension Notification {
     var keyboardData: KeyboardData? {
         guard let userInfo = userInfo, let endFrame = userInfo[UIKeyboardFrameEndUserInfoKey] as? CGRect else { return nil }

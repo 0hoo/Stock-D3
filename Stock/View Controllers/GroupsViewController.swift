@@ -7,6 +7,7 @@ class GroupsViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     var groups: [Group] = [Group(title: "성장", note: "성장하는 종목들")]
+    //[C11-17]
     var stocks: [Stock] = []
     
     deinit {
@@ -26,6 +27,7 @@ class GroupsViewController: UIViewController {
         
         tableView.separatorColor = .separator
         tableView.hideBottomSeparator()
+        //[C11-15]
         tableView.register(UINib(nibName: GroupTableViewCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: GroupTableViewCell.reuseIdentifier)
         
         reload()
@@ -70,6 +72,7 @@ class GroupsViewController: UIViewController {
             groups = try! PropertyListDecoder().decode([Group].self, from: data)
         }
         
+        //[C11-18]
         if let data = UserDefaults.standard.object(forKey: "stocks") as? Data {
             stocks = try! PropertyListDecoder().decode([Stock].self, from: data)
         }
@@ -105,9 +108,11 @@ extension GroupsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        //[C11-16]
         let cell = tableView.dequeueReusableCell(withIdentifier: GroupTableViewCell.reuseIdentifier, for: indexPath) as! GroupTableViewCell
         let group = groups[indexPath.row]
         cell.group = group
+        //[C11-19]
         cell.stocks = stocks.filter { $0.groupTitle == group.title }
         return cell
     }

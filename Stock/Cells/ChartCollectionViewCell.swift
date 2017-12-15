@@ -10,6 +10,7 @@ import UIKit
 
 class ChartCollectionViewCell: UICollectionViewCell {
 
+    //[C10-7]
     @IBOutlet weak var textLabel: UILabel!
     @IBOutlet weak var chartImageView: UIImageView!
     
@@ -17,6 +18,7 @@ class ChartCollectionViewCell: UICollectionViewCell {
         super.awakeFromNib()
     }
     
+    //[C10-8]
     override func prepareForReuse() {
         super.prepareForReuse()
         

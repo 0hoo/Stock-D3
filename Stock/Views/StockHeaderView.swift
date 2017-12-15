@@ -10,6 +10,7 @@ import UIKit
 
 class StockHeaderView: UITableViewHeaderFooterView {
 
+    //[C8-22]
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var separator: UIView!
@@ -17,12 +18,14 @@ class StockHeaderView: UITableViewHeaderFooterView {
     override func awakeFromNib() {
         super.awakeFromNib()
         
+        //[C8-27]
         let background = UIView(frame: self.bounds)
         background.backgroundColor = .white
         backgroundView = background
         
+        //[C8-23]
         //contentView.backgroundColor = .white
-        
+        //[C8-23]
         titleLabel.textColor = .themeBlue
         separator.backgroundColor = .separator
     }

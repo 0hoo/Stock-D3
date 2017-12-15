@@ -11,6 +11,7 @@ import SVProgressHUD
 import Alamofire
 import Kanna
 
+//[C7-2]
 class StockSection {
     var group: Group?
     var stocks: [Stock] = []
@@ -27,9 +28,12 @@ class StocksViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
+    //[C7-3]
     var stockSections: [StockSection] = []
     var stocks: [Stock] = []
     
+    
+    //[C12-1]
     let refreshControl = UIRefreshControl()
     
     deinit {
@@ -39,7 +43,9 @@ class StocksViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //[C1-12]
         NotificationCenter.default.addObserver(self, selector: #selector(saveStocks), name: Stock.didUpdate, object: nil)
+        //[C4-7]
         NotificationCenter.default.addObserver(self, selector: #selector(deleteStock(_:)), name: Stock.didDelete, object: nil)
         
         navigationItem.titleView = segmentedControl
@@ -51,9 +57,12 @@ class StocksViewController: UIViewController {
         
         tableView.separatorColor = .separator
         tableView.register(UINib(nibName: StockTableViewCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: StockTableViewCell.reuseIdentifier)
+        //[C8-24]
         tableView.register(UINib(nibName: StockHeaderView.reuseIdentifier, bundle: nil), forHeaderFooterViewReuseIdentifier: StockHeaderView.reuseIdentifier)
         tableView.hideBottomSeparator()
+        //[C12-2]
         tableView.addSubview(refreshControl)
+        //[C12-3]
         refreshControl.addTarget(self, action: #selector(refreshStocks), for: .valueChanged)
         
         reload()
@@ -61,6 +70,11 @@ class StocksViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        //[C1-13]
+        //tableView.reloadData()
+        
+        //[C7-14]
         reload()
     }
     
@@ -88,6 +102,7 @@ class StocksViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
+    //[C4-8]
     @objc func deleteStock(_ notification: Notification) {
         guard let stock = notification.object as? Stock else { return }
         guard let index = stocks.index(where: { $0.name == stock.name }) else { return }
@@ -108,6 +123,7 @@ class StocksViewController: UIViewController {
         let siteUrl = "http://finance.daum.net/item/main.daum?code=" + code
         Alamofire.request(siteUrl).responseString { response in
             SVProgressHUD.dismiss()
+            //[C12-4]
             self.refreshControl.endRefreshing()
             
             guard let html = response.result.value else { return }
@@ -174,17 +190,21 @@ class StocksViewController: UIViewController {
     
     @objc func saveStocks() {
         UserDefaults.standard.set(try? PropertyListEncoder().encode(stocks), forKey: "stocks")
+        //[C7-13]
         reload()
     }
     
     func reload() {
+        //[C7-4]
         guard let groups = AppDelegate.shared.groupsViewController?.groups else { return }
         guard let stocksData = UserDefaults.standard.object(forKey: "stocks") as? Data else { return }
         guard let stocks = try? PropertyListDecoder().decode([Stock].self, from: stocksData) else { return }
         self.stocks = stocks
 
+        //[C7-5]
         stockSections.removeAll()
         
+        //[C7-6]
         for group in groups {
             let stockSection = StockSection(group: group, stocks: stocks.filter({ $0.groupTitle == group.title }))
             if stockSection.stocks.count > 0 {
@@ -192,21 +212,26 @@ class StocksViewController: UIViewController {
             }
         }
         
+        //[C7-7]
         let noGroupStocks = stocks.filter({ $0.groupTitle == nil })
         if noGroupStocks.count > 0 {
             let stockSection = StockSection(group: nil, stocks: noGroupStocks)
             stockSections.insert(stockSection, at: 0)
         }
         
+        
+        //[C7-12]
         tableView.reloadData()
     }
 }
 
 extension StocksViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
+        //[C7-8]
         return stockSections.count
     }
     
+    //[C8-25]
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if stockSections[section].group == nil {
             return nil
@@ -218,16 +243,19 @@ extension StocksViewController: UITableViewDataSource {
         }
     }
     
+    //[C7-16]
 //    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 //        return stockSections[section].group?.title
 //    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        //[C7-9]
         return stockSections[section].stocks.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: StockTableViewCell.reuseIdentifier, for: indexPath) as! StockTableViewCell
+        //[C7-10]
         cell.stock = stockSections[indexPath.section].stocks[indexPath.row]
         cell.accessoryType = .disclosureIndicator
         return cell
@@ -237,10 +265,12 @@ extension StocksViewController: UITableViewDataSource {
 extension StocksViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        //[C7-11]
         let stock = stockSections[indexPath.section].stocks[indexPath.row]
         navigationController?.pushViewController(StockViewController(stock: stock), animated: true)
     }
     
+    //[C8-26]
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if stockSections[section].group == nil {
             return .leastNormalMagnitude
